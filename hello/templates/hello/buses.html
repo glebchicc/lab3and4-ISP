@@ -1,0 +1,13 @@
+{% extends 'hello/index.html' %}
+
+{% block title %}Список автобусов{% endblock %}
+
+{%block content %}
+  {% if nearest_buses %}
+    {% for a in nearest_buses %}
+      <a href="#">{{a.find_short_departure}}-{{a.find_short_arrival}} ({{a.departure_time}} - {{a.arrival_time}})</a>
+    {% endfor %}
+  {% else %}
+    Автобусы не найдены :(
+  {% endif %}
+{% endblock %}
