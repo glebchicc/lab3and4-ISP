@@ -1,0 +1,12 @@
+{% extends "hello/index.html" %}
+{% block title %}Log-in{% endblock %}
+{% block content %}
+    <h1>Log-in</h1>
+    <p>Воспользуйтесь данной формой для входа:</p>
+    <form action="." method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <p>Или воспользуйтесь формой <a href="/register/">регистрации</a>.</p>
+        <p><input type="submit" value="Войти"></p>
+    </form>
+{% endblock %}

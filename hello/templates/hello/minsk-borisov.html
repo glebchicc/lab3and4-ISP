@@ -1,0 +1,15 @@
+{% extends 'hello/index.html' %}
+
+{% block title %}Автобусы Минск-Борисов{% endblock %}
+
+{%block content %}
+  <h1 align="center">Список автобусов Минск-Борисов</h1>
+
+  {% if nearest_buses %}
+    {% for a in nearest_buses %}
+      <p><a href="#">{{a.find_short_departure}}-{{a.find_short_arrival}} ({{a.departure_time}} - {{a.arrival_time}}) {{a.places}} мест</a></p>
+    {% endfor %}
+  {% else %}
+    Автобусы не найдены :(
+  {% endif %}
+{% endblock %}

@@ -1,32 +1,34 @@
 from django.db import models
+from django.utils import timezone
 
 
-# Create your models here.
-# class Bus:
-#    def __init__(self, seats, id_number, departure_time, arrival_time):
-#        self.seats = seats
-#        self.id_number = id_number
-#        self.departure_time = departure_time
-#        self.arrival_time = arrival_time
-#
-#    def make_order(self):
-#        if (self.seats > 0):
-#            self.seats -= 1
-#            # присвоить сидение пассажиру
-#        else:
-#            print("Нет мест.")
-#
-#    def cancel_order(self):
-#        self.seats += 1
-#        # отменить привязку места к пассажиру
-#
-#    def exchange_orger(self):
-#        pass
-#
-#
-# class Passenger:
-#    def __init__(self):
-#        pass
+def show_buses():
+    buses = Bus.objects.order_by("departure_time")
+    for i in buses:
+        if i.departure_time < timezone.now():
+            i.delete()
+        else:
+            break
+    return buses
+
+
+def generate_buses():
+    for i in range(10):
+        i = Bus(bus_number=i, departure_time=timezone.now() + timezone.timedelta(minutes=20 + 15 * i),
+                arrival_time=timezone.now() + timezone.timedelta(minutes=80 + 15 * i),
+                departure_place="Борисов, парковка Веста", arrival_place="Минск, ст. м. Борисовский тракт",
+                place_cost="5.0", places=17)
+        i.save()
+    for i in range(10):
+        i = Bus(bus_number=i, departure_time=timezone.now() + timezone.timedelta(minutes=20 + 15 * i),
+                arrival_time=timezone.now() + timezone.timedelta(minutes=80 + 15 * i),
+                departure_place="Минск, ст. м. Борисовский тракт", arrival_place="Борисов, парковка Веста",
+                place_cost="5.0", places=17)
+        i.save()
+
+
+class SizeOfBus(models.Model):
+    title = models.CharField("Название размера автобуса")
 
 
 class Bus(models.Model):
@@ -37,6 +39,7 @@ class Bus(models.Model):
     arrival_place = models.CharField("Место назначения", max_length=50)
     place_cost = models.CharField("Стоимость одного места", max_length=10)
     places = models.IntegerField("Количество мест")
+    size_of_bus = models.ForeignKey(SizeOfBus, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = "Автобус"
@@ -51,12 +54,3 @@ class Bus(models.Model):
         for i in range(len(self.arrival_place)):
             if self.arrival_place[i] == ',':
                 return self.arrival_place[:i]
-
-
-class Passanger(models.Model):
-    name = models.CharField("Фамилия и имя пассажира", max_length=50)
-    ordered_buses = models.CharField("Заказанные автобусы", max_length=40)
-
-    class Meta:
-        verbose_name = "Пассажир"
-        verbose_name_plural = "Пассажиры"

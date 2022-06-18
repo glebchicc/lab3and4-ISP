@@ -1,0 +1,21 @@
+{% extends 'hello/index.html' %}
+
+{% block title %}Выбор городов{% endblock %}
+
+{%block content %}
+{% if user.get_username != '' %}
+<h2 align="center">Пользователь: {{ user.get_username }}. <a href="/logout/">Разлогиниться.</a></h2>
+{% else %}
+<h2 align="center">Вы не авторизованы! Чтобы воспользоваться расписанием автобусов, <a href="/login/">авторизуйтесь</a> или
+    <a href="/register/">зарегистрируйтесь</a>.</h2>
+{% endif %}
+
+<h1 align="center">Выберите город отправления</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <input type="submit" value="Найти">
+</form>
+{% endblock %}
