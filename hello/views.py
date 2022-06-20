@@ -2,12 +2,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.forms import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+import logging
+
+logger = logging.getLogger(__name__)
 
 from .forms import CityChooseForm, UserRegistrationForm, LoginForm, BusForm
 from .models import show_buses, generate_buses, Bus
 
 
 def index(request):
+    logger.info("Main page")
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -25,6 +29,7 @@ def index(request):
 
 
 def borisov_minsk(request):
+    logger.info("Borisov-Minsk buses page")
     if request.user.is_authenticated:
         nearest_buses = []
         if show_buses().count() < 3:
@@ -38,6 +43,7 @@ def borisov_minsk(request):
 
 
 def minsk_borisov(request):
+    logger.info("Minsk-Borisov buses page")
     if request.user.is_authenticated:
         nearest_buses = []
         if show_buses().count() < 3:
@@ -51,6 +57,7 @@ def minsk_borisov(request):
 
 
 def register(request):
+    logger.info("Registration page")
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():
@@ -67,6 +74,7 @@ def register(request):
 
 
 def user_login(request):
+    logger.info("Login page")
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -86,12 +94,14 @@ def user_login(request):
 
 
 def user_logout(request):
+    logger.info("Logout page")
     if request.user.is_authenticated:
         logout(request)
     return HttpResponseRedirect('/')
 
 
 def bus_list(request):
+    logger.info("Admin list page")
     if show_buses().count() < 3:
         generate_buses()
     context = Bus.objects.order_by("departure_time")
@@ -99,6 +109,7 @@ def bus_list(request):
 
 
 def bus_form(request, id=0):
+    logger.info("Create/update bus page")
     if request.method == "GET":
         if id == 0:
             form = BusForm()
@@ -118,6 +129,7 @@ def bus_form(request, id=0):
 
 
 def bus_delete(request, id):
+    logger.info("Delete bus page")
     bus = Bus.objects.get(pk=id)
     bus.delete()
     return redirect('/crud/list')

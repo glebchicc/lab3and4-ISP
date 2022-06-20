@@ -38,21 +38,22 @@
   {% if nearest_buses %}
     {% for a in nearest_buses %}
       <ul>
+        {% load tz %}
         <li>
           <p>Маршрут:</p>
           <p>{{a.find_short_departure}}-{{a.find_short_arrival}}</p>
         </li>
         <li>
-          <p>Дата отправления:</p>
-          <p>{{a.departure_time.date}}</p>
-        </li>
-        <li>
           <p>Время отправления:</p>
-          <p>{{a.departure_time.time}}</p>
+          {% localtime on %}
+          <p>{{a.departure_time}}</p>
+          {% endlocaltime %}
         </li>
         <li>
           <p>Время прибытия:</p>
-          <p>{{a.arrival_time.time}}</p>
+          {% localtime on %}
+          <p>{{a.arrival_time}}</p>
+          {% endlocaltime %}
         </li>
         <li>
           <p>Мест в салоне:</p>
