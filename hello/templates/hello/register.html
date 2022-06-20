@@ -3,6 +3,26 @@
 {% block title %}Создание аккаунта{% endblock %}
 
 {% block content %}
+    <style>
+        input[type=text], input[type=password] {
+            border:1px solid #ccc;
+            border-radius:5px;
+            height:25px;
+            width:200px;
+            margin: 10px 10px 10px 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        input[type=button], input[type=submit], input[type=reset] {
+            background-color: #E6E6FA;
+            border: none;
+            padding: 16px 32px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+            color: black;
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
     <h1>Создание аккаунта</h1>
     <p>Зарегистрируйтесь, используя данную форму</p>
     <form action="." method="post">

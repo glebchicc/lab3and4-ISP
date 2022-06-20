@@ -4,12 +4,63 @@
 
 {%block content %}
   <h1 align="center">Список автобусов Борисов-Минск</h1>
+  <style type="text/css">
+   ul {
+        font: 14px Verdana, Geneva, sans-serif;
+        text-align: justify;
+        align: center;
+        background-color: #E6E6FA;
+   }
+   ul li  {
+        width: 10%;
+        height: 10%;
+        display: inline-block;
+        text-align: left;
+   }
+   ul li.helper {
+    width: 100%;
+    height: 0;
+    visibility: hidden;
+   }
+   p {
+    font-size: 120%;
+    font-family: 'Montserrat', sans-serif;
+    color: #000000;
+    align: center;
+   }
+  </style>
 
   {% if nearest_buses %}
     {% for a in nearest_buses %}
-      <p><a href="#">{{a.find_short_departure}}-{{a.find_short_arrival}} ({{a.departure_time}} - {{a.arrival_time}}) {{a.places}} мест</a></p>
+      <ul>
+        <li>
+          <p>Маршрут:</p>
+          <p>{{a.find_short_departure}}-{{a.find_short_arrival}}</p>
+        </li>
+        <li>
+          <p>Дата отправления:</p>
+          <p>{{a.departure_time.date}}</p>
+        </li>
+        <li>
+          <p>Время отправления:</p>
+          <p>{{a.departure_time.time}}</p>
+        </li>
+        <li>
+          <p>Время прибытия:</p>
+          <p>{{a.arrival_time.time}}</p>
+        </li>
+        <li>
+          <p>Мест в салоне:</p>
+          <p> {{a.places}}</p>
+        </li>
+        <li>
+          <p>Размер автобуса:</p>
+          <p> {{a.size_of_bus.title}}</p>
+        </li>
+        <li class="helper"></li>
+      </ul>
     {% endfor %}
   {% else %}
-    Автобусы не найдены :(
+    <p align="center">Автобусы не найдены :(</p>
   {% endif %}
 {% endblock %}

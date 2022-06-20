@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 
 from .forms import CityChooseForm, UserRegistrationForm, LoginForm
-from .models import show_buses
+from .models import show_buses, generate_buses
 
 
 def index(request):
@@ -27,6 +27,8 @@ def index(request):
 def borisov_minsk(request):
     if request.user.is_authenticated:
         nearest_buses = []
+        if show_buses().count < 3:
+            generate_buses()
         for bus in show_buses():
             if bus.find_short_departure() == "Борисов":
                 nearest_buses.append(bus)
@@ -35,10 +37,11 @@ def borisov_minsk(request):
         return HttpResponseRedirect('/login/')
 
 
-
 def minsk_borisov(request):
     if request.user.is_authenticated:
         nearest_buses = []
+        if show_buses().count < 3:
+            generate_buses()
         for bus in show_buses():
             if bus.find_short_departure() == "Минск":
                 nearest_buses.append(bus)
@@ -74,9 +77,9 @@ def user_login(request):
                     login(request, user)
                     return HttpResponseRedirect('/')
                 else:
-                    return forms.ValidationError('Данный аккаунт деактивирован.')
+                    raise forms.ValidationError('Данный аккаунт деактивирован.')
             else:
-                return forms.ValidationError('Неправильный логин или пароль.')
+                raise forms.ValidationError('Неправильный логин или пароль.')
     else:
         form = LoginForm()
     return render(request, 'hello/login.html', {'form': form})

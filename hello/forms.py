@@ -7,13 +7,15 @@ class CityChooseForm(forms.Form):
         ('borisov', 'Борисов'),
         ('minsk', 'Минск'),
     )
-    select = forms.ChoiceField(widget=forms.Select, choices=CHOICES, label="Город отправления")
-    select2 = forms.ChoiceField(widget=forms.Select, choices=CHOICES, label="Город прибытия")
+    select = forms.ChoiceField(widget=forms.Select(attrs={'class': 'choice'}), choices=CHOICES, label="Город отправления")
+    select2 = forms.ChoiceField(widget=forms.Select(attrs={'class': 'choice'}), choices=CHOICES, label="Город прибытия")
 
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Повторите пароль', widget=forms.PasswordInput)
+    password.widget.attrs.update({'class': 'myfield'})
+    password2.widget.attrs.update({'class': 'myfield'})
 
     class Meta:
         model = User
@@ -28,4 +30,6 @@ class UserRegistrationForm(forms.ModelForm):
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Логин')
-    password = forms.CharField(widget=forms.PasswordInput, label='Пароль')
+    password = forms.CharField(label='Пароль', widget=forms.PasswordInput)
+    username.widget.attrs.update({'class': 'myfield'})
+    password.widget.attrs.update({'class': 'myfield'})
