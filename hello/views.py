@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.forms import forms
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, redirect
 import logging
 import asyncio
@@ -131,6 +131,8 @@ def bus_form(request, id=0):
                 logger.info('Bus created')
                 form.save()
             return redirect('/crud/list')
+    else:
+        return HttpResponseNotFound()
 
 
 def async_delete(request, id):
