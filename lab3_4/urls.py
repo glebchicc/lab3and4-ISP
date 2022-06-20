@@ -29,5 +29,5 @@ urlpatterns = [
     path('crud/', bus_form, name='bus_insert'),
     path('crud/list/', bus_list, name='bus_list'),
     path('crud/<int:id>/', bus_form, name='bus_update'),
-    path('crud/delete/<int:id>', bus_delete, name='bus_delete'),
+    path('crud/delete/<int:id>', async_delete, name='bus_delete'),
 ]

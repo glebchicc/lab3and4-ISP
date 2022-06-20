@@ -3,6 +3,8 @@ from django.forms import forms
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 import logging
+import asyncio
+from asgiref.sync import sync_to_async
 
 logger = logging.getLogger(__name__)
 
@@ -101,35 +103,53 @@ def user_logout(request):
 
 
 def bus_list(request):
-    logger.info("Admin list page")
-    if show_buses().count() < 3:
-        generate_buses()
-    context = Bus.objects.order_by("departure_time")
-    return render(request, "hello/bus_list.html", {'bus_list': context})
+    if request.user.is_superuser:
+        logger.info("Admin list page")
+        if show_buses().count() < 3:
+            generate_buses()
+        context = Bus.objects.order_by("departure_time")
+        return render(request, "hello/bus_list.html", {'bus_list': context})
 
 
 def bus_form(request, id=0):
-    logger.info("Create/update bus page")
-    if request.method == "GET":
-        if id == 0:
-            form = BusForm()
+    if request.user.is_superuser:
+        if request.method == "GET":
+            if id == 0:
+                form = BusForm()
+            else:
+                bus = Bus.objects.get(pk=id)
+                form = BusForm(instance=bus)
+                logger.info('Bus updated')
+            return render(request, "hello/bus_form.html", {'form': form})
         else:
-            bus = Bus.objects.get(pk=id)
-            form = BusForm(instance=bus)
-        return render(request, "hello/bus_form.html", {'form': form})
-    else:
-        if id == 0:
-            form = BusForm(request.POST)
-        else:
-            bus = Bus.objects.get(pk=id)
-            form = BusForm(request.POST, instance=bus)
-        if form.is_valid():
-            form.save()
-        return redirect('/crud/list')
+            if id == 0:
+                form = BusForm(request.POST)
+            else:
+                bus = Bus.objects.get(pk=id)
+                form = BusForm(request.POST, instance=bus)
+            if form.is_valid():
+                logger.info('Bus created')
+                form.save()
+            return redirect('/crud/list')
 
 
+def async_delete(request, id):
+    asyncio.run(async_bus_delete(id))
+    return redirect('/crud/list')
+
+
+@sync_to_async
 def bus_delete(request, id):
-    logger.info("Delete bus page")
     bus = Bus.objects.get(pk=id)
     bus.delete()
-    return redirect('/crud/list')
+
+
+async def async_bus_delete(id):
+    task1 = asyncio.create_task(bus_delete(id))
+    task2 = asyncio.create_task(delete_print_log(id))
+    await asyncio.gather(task1, task2)
+
+
+@sync_to_async
+def delete_print_log(id):
+    logger.info("Delete bus page ", id)

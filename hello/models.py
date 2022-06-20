@@ -1,4 +1,3 @@
-import django
 from django.db import models
 from django.utils import timezone
 
@@ -37,8 +36,8 @@ class SizeOfBus(models.Model):
 
 class Bus(models.Model):
     bus_number = models.CharField("Номер автобуса", max_length=8)
-    departure_time = models.DateTimeField("Время отправления", default=django.utils.timezone.now())
-    arrival_time = models.DateTimeField("Время прибытия", default=django.utils.timezone.now())
+    departure_time = models.DateTimeField("Время отправления")
+    arrival_time = models.DateTimeField("Время прибытия")
     departure_place = models.CharField("Точка сбора", max_length=50)
     arrival_place = models.CharField("Место назначения", max_length=50)
     place_cost = models.CharField("Стоимость одного места", max_length=10)
