@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from hello.views import index, borisov_minsk, minsk_borisov, user_login, register, user_logout
+from hello.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +25,9 @@ urlpatterns = [
     path('route/minsk-borisov/', minsk_borisov),
     path('register/', register),
     path('login/', user_login),
-    path('logout/', user_logout)
+    path('logout/', user_logout),
+    path('crud/', bus_form, name='bus_insert'),
+    path('crud/list/', bus_list, name='bus_list'),
+    path('crud/<int:id>/', bus_form, name='bus_update'),
+    path('crud/delete/<int:id>', bus_delete, name='bus_delete'),
 ]

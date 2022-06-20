@@ -24,6 +24,17 @@
    }
   </style>
 
+  {% if user.get_username != '' %}
+  <h2 align="center">Пользователь: {{ user.get_username }}. <a href="/logout/">Разлогиниться.</a></h2>
+  {% else %}
+  <h2 align="center">Вы не авторизованы! Чтобы воспользоваться расписанием автобусов, <a href="/login/">авторизуйтесь</a> или
+    <a href="/register/">зарегистрируйтесь</a>.</h2>
+  {% endif %}
+
+  {% if user.is_superuser %}
+  <h2 align="center">Создавайте, изменяйте и удаляйте автобусы <a href="/crud/">тут</a>.</h2>
+  {% endif %}
+
   {% if nearest_buses %}
     {% for a in nearest_buses %}
       <ul>

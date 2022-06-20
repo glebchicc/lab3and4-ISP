@@ -30,6 +30,9 @@ def generate_buses():
 class SizeOfBus(models.Model):
     title = models.CharField("Название размера автобуса", max_length=50)
 
+    def __str__(self):
+        return self.title
+
 
 class Bus(models.Model):
     bus_number = models.CharField("Номер автобуса", max_length=8)

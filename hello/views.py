@@ -1,10 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.forms import forms
-from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 
-from .forms import CityChooseForm, UserRegistrationForm, LoginForm
-from .models import show_buses, generate_buses
+from .forms import CityChooseForm, UserRegistrationForm, LoginForm, BusForm
+from .models import show_buses, generate_buses, Bus
 
 
 def index(request):
@@ -27,7 +27,7 @@ def index(request):
 def borisov_minsk(request):
     if request.user.is_authenticated:
         nearest_buses = []
-        if show_buses().count < 3:
+        if show_buses().count() < 3:
             generate_buses()
         for bus in show_buses():
             if bus.find_short_departure() == "Борисов":
@@ -40,7 +40,7 @@ def borisov_minsk(request):
 def minsk_borisov(request):
     if request.user.is_authenticated:
         nearest_buses = []
-        if show_buses().count < 3:
+        if show_buses().count() < 3:
             generate_buses()
         for bus in show_buses():
             if bus.find_short_departure() == "Минск":
@@ -88,6 +88,36 @@ def user_login(request):
 def user_logout(request):
     if request.user.is_authenticated:
         logout(request)
-        return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/')
+
+
+def bus_list(request):
+    if show_buses().count() < 3:
+        generate_buses()
+    context = Bus.objects.order_by("departure_time")
+    return render(request, "hello/bus_list.html", {'bus_list': context})
+
+
+def bus_form(request, id=0):
+    if request.method == "GET":
+        if id == 0:
+            form = BusForm()
+        else:
+            bus = Bus.objects.get(pk=id)
+            form = BusForm(instance=bus)
+        return render(request, "hello/bus_form.html", {'form': form})
     else:
-        return HttpResponse("Не зашел")
+        if id == 0:
+            form = BusForm(request.POST)
+        else:
+            bus = Bus.objects.get(pk=id)
+            form = BusForm(request.POST, instance=bus)
+        if form.is_valid():
+            form.save()
+        return redirect('/crud/list')
+
+
+def bus_delete(request, id):
+    bus = Bus.objects.get(pk=id)
+    bus.delete()
+    return redirect('/crud/list')
