@@ -11,7 +11,7 @@ class TestClass(TestCase):
         user = User.objects.create(username='programtest')
         user.set_password('123456')
         user.save()
-        self.client.login(username='programuser', password='123456')
+        self.client.login(username='programtest', password='123456')
 
     def test_registration(self):
         data = {'username': 'regTestUser', 'password': '147258', 'password2': '147258'}
@@ -19,7 +19,8 @@ class TestClass(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_login(self):
-        data = {'username': 'test_user', 'password': '123456'}
+        data = {'username': 'regTestUser', 'password': '147258', 'password2': '147258'}
+        self.client.post("/register/", data=data, follow=True)
         response = self.client.post("/login/", data=data, follow=True)
         self.assertEqual(response.status_code, 200)
 

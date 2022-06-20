@@ -82,7 +82,7 @@ def user_login(request):
         if form.is_valid():
             cd = form.cleaned_data
             user = authenticate(username=cd['username'], password=cd['password'])
-            if user is not None:
+            if user.is_authenticated:
                 if user.is_active:
                     login(request, user)
                     return HttpResponseRedirect('/')
@@ -109,6 +109,8 @@ def bus_list(request):
             generate_buses()
         context = Bus.objects.order_by("departure_time")
         return render(request, "hello/bus_list.html", {'bus_list': context})
+    else:
+        return HttpResponseNotFound("Страница не найдена :(")
 
 
 def bus_form(request, id=0):
@@ -132,7 +134,7 @@ def bus_form(request, id=0):
                 form.save()
             return redirect('/crud/list')
     else:
-        return HttpResponseNotFound()
+        return HttpResponseNotFound("Страница не найдена :(")
 
 
 def async_delete(request, id):
@@ -141,7 +143,7 @@ def async_delete(request, id):
 
 
 @sync_to_async
-def bus_delete(request, id):
+def bus_delete(id):
     bus = Bus.objects.get(pk=id)
     bus.delete()
 

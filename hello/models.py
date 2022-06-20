@@ -13,6 +13,14 @@ def show_buses():
 
 
 def generate_buses():
+    if SizeOfBus.objects.all().count() == 0:
+        i = SizeOfBus(title="Маленький")
+        i.save()
+        i = SizeOfBus(title="Средний")
+        i.save()
+        i = SizeOfBus(title="Большой")
+        i.save()
+
     for i in range(10):
         i = Bus(bus_number=i, departure_time=timezone.now() + timezone.timedelta(minutes=20 + 15 * i),
                 arrival_time=timezone.now() + timezone.timedelta(minutes=80 + 15 * i),
